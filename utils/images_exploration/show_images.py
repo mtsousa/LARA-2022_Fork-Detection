@@ -25,6 +25,8 @@ def read_ids(input_name):
     input_ids = '../../data/annotations/' + input_name + '_id.txt'
     with open(input_ids, 'r') as id_list:
         img_ids = [int(str(line[0:-1])) for line in id_list.readlines()]
+    # Remove duplicates
+    img_ids = list(dict.fromkeys(img_ids))
     shuffle(img_ids)
     return img_ids
 

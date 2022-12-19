@@ -4,3 +4,4 @@ data/val/
 utils/coco_manager/annotations/instances_train2017.json
 utils/coco_manager/annotations/instances_val2017.json
 pFD/
+__pycache__/
