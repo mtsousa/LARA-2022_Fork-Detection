@@ -101,6 +101,7 @@ class CocoForkDataset(Dataset):
 #     """
 #     Draw the bbox and show the image
 #     """
+#     import numpy as np
 #     img = np.float32(img)
 #     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
 #     for box in bbox:
@@ -112,8 +113,8 @@ class CocoForkDataset(Dataset):
 
 # from utils import get_transforms
 
-# dataset = CocoForkDataset('../data/val', '../data/annotations', get_transforms(train=False, size=(640, 640)), 'val')
-# for k in range(5):
+# dataset = CocoForkDataset('../data/train', '../data/annotations', get_transforms(train=True, size=(640, 640)), 'train')
+# for k in range(20, 30):
 #     img, ann = dataset.__getitem__(k)
 #     # print(img.shape, ann)
 #     show_image(img.numpy().transpose(1, 2, 0), ann['boxes'])

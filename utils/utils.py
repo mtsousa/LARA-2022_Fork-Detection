@@ -17,7 +17,14 @@ def get_transforms(train, size):
     transforms = []
     transforms.append(T.ToTensor())
     transforms.append(T.ConvertImageDtype(float))
-    transforms.append(T.Resize((size)))
     if train:
-        transforms.append(T.RandomHorizontalFlip(0.5))
+        random_transforms = []
+        random_transforms.append(T.RandomHorizontalFlip(0.5))
+        random_transforms.append(T.RandomIoUCrop())
+        random_transforms.append(T.GaussianNoise(sigma=(0.1, 0.15)))
+        random_transforms.append(T.Buffer())
+        # random_transforms.append(T.RandomRotation(degrees=(-20, 20)))
+        p = [1/len(random_transforms) for k in range(len(random_transforms))]
+        transforms.append(T.RandomChoice(random_transforms, p))
+    transforms.append(T.Resize((size)))
     return T.Compose(transforms)

@@ -9,6 +9,7 @@ import torchvision
 from torch import nn, Tensor
 from torchvision import ops
 from torchvision.transforms import functional as F, InterpolationMode, transforms as T
+import random
 
 
 def _flip_coco_person_keypoints(kps, width):
@@ -150,12 +151,15 @@ class RandomIoUCrop(nn.Module):
 
                 # keep only valid boxes and perform cropping
                 target["boxes"] = boxes
-                target["labels"] = target["labels"][is_within_crop_area]
+                # target["labels"] = target["labels"][is_within_crop_area]
                 target["boxes"][:, 0::2] -= left
                 target["boxes"][:, 1::2] -= top
                 target["boxes"][:, 0::2].clamp_(min=0, max=new_w)
                 target["boxes"][:, 1::2].clamp_(min=0, max=new_h)
                 image = F.crop(image, top, left, new_h, new_w)
+
+                # Refresh target area
+                target["area"][:] = (target["boxes"][:, 3] - target["boxes"][:, 1]) * (target["boxes"][:, 2] - target["boxes"][:, 0])
 
                 return image, target
 
@@ -600,19 +604,8 @@ class SimpleCopyPaste(torch.nn.Module):
         s = f"{self.__class__.__name__}(blending={self.blending}, resize_interpolation={self.resize_interpolation})"
         return s
 
-class Resize(nn.Module):
-    def __init__(
-        self,
-        size: tuple,
-        interpolation: InterpolationMode = InterpolationMode.BILINEAR,):
-        super().__init__()
-        self.size = size
-        self.interpolation = interpolation
-
-    def forward(
-        self, image: Tensor, target: Optional[Dict[str, Tensor]] = None
-    ) -> Tuple[Tensor, Optional[Dict[str, Tensor]]]:
-
+class Resize(T.Resize):
+    def forward(self, image, target=None):
         _, orig_height, orig_width = F.get_dimensions(image)
 
         new_width = self.size[0]
@@ -623,10 +616,54 @@ class Resize(nn.Module):
         if target is not None:
             target["boxes"][:, 0::2] *= new_width / orig_width
             target["boxes"][:, 1::2] *= new_height / orig_height
-            target["area"][:] = (target["boxes"][:, 3] - target["boxes"][:, 1]) * (target["boxes"][:, 2] - target["boxes"][:, 0]) 
+            target["area"][:] = (target["boxes"][:, 3] - target["boxes"][:, 1]) * (target["boxes"][:, 2] - target["boxes"][:, 0])
 
         return image, target
 
-    def __repr__(self):
-        interpolate_str = self.interpolation.value
-        return self.__class__.__name__ + '(size={0}, interpolation={1})'.format(self.size, interpolate_str)
+class GaussianNoise(nn.Module):
+    """
+    Based on https://github.com/pytorch/vision/issues/6192#issuecomment-1164176231
+    """
+    def __init__(self, sigma=(0.1, 2.0)):
+        super().__init__()
+        self.sigma = sigma
+
+    @staticmethod
+    def get_params(sigma_min: float, sigma_max: float):
+        return torch.empty(1).uniform_(sigma_min, sigma_max).item()
+
+    def forward(self, img: Tensor, ann) -> Tensor:
+        sigma = self.get_params(self.sigma[0], self.sigma[1])
+        out_img = img + sigma * torch.randn_like(img)
+        return out_img, ann
+
+class Buffer(nn.Module):
+    def __init__(self):
+        super().__init__()
+    
+    def forward(self, img: Tensor, ann) -> Tensor:
+        return img, ann
+
+class RandomRotation(T.RandomRotation):
+    def forward(self, img, target):
+        self.interpolation = InterpolationMode.BILINEAR
+        fill = self.fill
+        channels, _, _ = F.get_dimensions(img)
+        if isinstance(img, Tensor):
+            if isinstance(fill, (int, float)):
+                fill = [float(fill)] * channels
+            else:
+                fill = [float(f) for f in fill]
+        angle = self.get_params(self.degrees)
+
+        img = F.rotate(img, angle, self.interpolation, self.expand, self.center, fill)
+        
+        # TODO: Implement target rotation
+        return img, target
+
+class RandomChoice(T.RandomChoice):
+    # def __call__(self, *args):
+    #     t = random.choices(self.transforms, weights=self.p)[0]
+    #     print(t)
+    #     return t(*args)
+    pass
