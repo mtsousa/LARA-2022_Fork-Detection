@@ -23,7 +23,7 @@ def get_transforms(train, size):
         random_transforms.append(T.RandomIoUCrop())
         random_transforms.append(T.GaussianNoise(sigma=(0.1, 0.15)))
         random_transforms.append(T.Buffer())
-        # random_transforms.append(T.RandomRotation(degrees=(-20, 20)))
+        random_transforms.append(T.RandomRotation(degrees=(-20, 20), expand=True))
         p = [1/len(random_transforms) for k in range(len(random_transforms))]
         transforms.append(T.RandomChoice(random_transforms, p))
     transforms.append(T.Resize((size)))
