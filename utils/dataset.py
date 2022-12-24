@@ -54,6 +54,8 @@ class CocoForkDataset(Dataset):
         ann['boxes'] = [k['bbox'] for k in ann_list]
         ann['category_id'] = [k['category_id'] for k in ann_list]
         ann['id'] = [k['id'] for k in ann_list]
+        # As this dataset only has one class, this class has the number 1 as label
+        ann['labels'] = as_tensor([1 for k in ann_list])
 
         boxes = []
         areas = []
@@ -107,6 +109,7 @@ class CocoForkDataset(Dataset):
 #     for box in bbox:
 #         x0, y0, x1, y1 = int(box[0]), int(box[1]), int(box[2]), int(box[3]) 
 #         cv.rectangle(img, (x0, y0), (x1, y1), (255,0,0), 2)
+#     # cv.imwrite('img_name.jpg', img*255)
 #     cv.imshow(f'IMG', img)
 #     cv.waitKey(0)
 #     cv.destroyAllWindows()
