@@ -9,6 +9,16 @@ import cv2 as cv
 import argparse
 from random import shuffle
 
+import sys
+from pathlib import Path
+
+file = Path(__file__).resolve()
+package_root_directory = file.parents[2]
+print(package_root_directory)
+sys.path.append(str(package_root_directory))
+
+from utils.utils import plot_one_box, show_predicted_image
+
 def read_json(input_name):
     """
     Read json annotations file
@@ -48,19 +58,6 @@ def find_image(coco, img_ids):
                     images[image_id]['bbox'].append(bbox)
     return images
 
-def show_image(id, dataset, file_name, bbox):
-    """
-    Draw the bbox and show the image
-    """
-    img = cv.imread(f'../../data/{dataset}/{file_name}')
-    # "bbox": [x,y,width,height]
-    for box in bbox:
-        x, y, w, h = int(box[0]), int(box[1]), int(box[2]), int(box[3])
-        cv.rectangle(img, (x, y), (x+w, y+h), (255,0,0), 2)
-    cv.imshow(f'IMG {id}', img)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
-
 if __name__ == '__main__':
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Explore COCO dataset.')
@@ -86,4 +83,12 @@ if __name__ == '__main__':
     # For each image, show the bbox
     print('Loading images...')
     for k in images.keys():
-        show_image(k, dataset, images[k]['name'], images[k]['bbox'])
+        image = images[k]['name']
+        img = cv.imread(f'../../data/{dataset}/{image}')
+
+        for j in images[k]['bbox']:
+            x, y, w, h = int(j[0]), int(j[1]), int(j[2]), int(j[3])
+            box = [x, y, x+w, y+h]
+            plot_one_box(box, img, label='fork', color=[104, 184, 82], line_thickness=1)
+        
+        show_predicted_image(img)

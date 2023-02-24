@@ -8,6 +8,9 @@ from torch.utils.data import Dataset
 import json
 import cv2 as cv
 from torch import as_tensor, float64
+from .utils import letterbox
+import numpy as np
+import os
 
 class CocoForkDataset(Dataset):
     def __init__(self, img_dir, ann_dir, transforms=None, mode='train', device='cpu'):
@@ -99,25 +102,46 @@ class CocoForkDataset(Dataset):
         img_ids = list(dict.fromkeys(img_ids))
         return img_ids
 
-# def show_image(img, bbox):
-#     """
-#     Draw the bbox and show the image
-#     """
-#     import numpy as np
-#     img = np.float32(img)
-#     img = cv.cvtColor(img, cv.COLOR_RGB2BGR)
-#     for box in bbox:
-#         x0, y0, x1, y1 = int(box[0]), int(box[1]), int(box[2]), int(box[3]) 
-#         cv.rectangle(img, (x0, y0), (x1, y1), (255,0,0), 2)
-#     # cv.imwrite('img_name.jpg', img*255)
-#     cv.imshow(f'IMG', img)
-#     cv.waitKey(0)
-#     cv.destroyAllWindows()
+class TestDataset(Dataset):
+	def __init__(self, path, shape):
+		"""
+        Initiliaze the dataset
+        
+        Args
+            - path: Path to images
+            - shape: Input shape
+        """
+		self.path = path
+		self.imgs_list = os.listdir(path)
+		self.shape = shape
 
-# from utils import get_transforms
+	def __len__(self):
+		"""
+		Return the length of the dataset
+		"""
+		return len(self.imgs_list)
 
-# dataset = CocoForkDataset('../data/train', '../data/annotations', get_transforms(train=True, size=(640, 640)), 'train')
-# for k in range(20, 30):
-#     img, ann = dataset.__getitem__(k)
-#     # print(img.shape, ann)
-#     show_image(img.numpy().transpose(1, 2, 0), ann['boxes'])
+	def __getitem__(self, idx):
+		"""
+		Get an item from dataset by index with transformations
+		"""
+		img = cv.imread(self.path + "/" + self.imgs_list[idx])
+		img = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+		image = img.copy()
+
+        # Adjust image shape
+		image, ratio, dwdh = letterbox(image, new_shape=self.shape, auto=False)
+		
+		# Transpose and set as a contiguous array
+		image = image.transpose((2, 0, 1))
+		image = np.ascontiguousarray(image)
+		im = image.astype(np.float32)
+        
+		return {"image": im, "ratio": ratio,"dwdh": dwdh, "name": self.imgs_list[idx]}
+
+	def __getsrc__(self, idx):
+		"""
+        Get an item from dataset by index without transformations
+        """
+		img = cv.imread(self.path + "/" + self.imgs_list[idx])
+		return img

@@ -10,3 +10,4 @@ yolov7-fork-o/
 yolov7-fork-p/
 *.pt
 *.onnx
+plot_mosaic.py
