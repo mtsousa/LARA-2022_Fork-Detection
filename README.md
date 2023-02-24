@@ -1,5 +1,7 @@
 # LARA-2022_Fork-Detection
 
+![](https://img.shields.io/badge/version-v0.1-blue)
+
 Este repositório contém o código para treinamento de uma rede neural [YOLOv7](https://github.com/WongKinYiu/yolov7) para detecção de garfos a partir do fine-tuning de um modelo pré-treinado no dataset COCO 2017.
 
 ## Dados do treinamento
@@ -48,7 +50,11 @@ pip install -r requirements.txt
 
 ### Treinamento
 
-1. Baixe os pesos pré-treinados (yolov7.pt, fork_best.pt ou fork_last.pt) para a pasta [models](models/).
+[`yolov7.pt`](https://github.com/mtsousa/LARA-2022_Fork-Detection/releases/download/v0.1/yolov7.pt)
+[`fork_best_640x640.pt`](https://github.com/mtsousa/LARA-2022_Fork-Detection/releases/download/v0.1/fork_best_640x640.pt)
+[`fork_last_640x640.pt`](https://github.com/mtsousa/LARA-2022_Fork-Detection/releases/download/v0.1/fork_last_640x640.pt)
+
+1. Baixe os pesos pré-treinados (yolov7.pt, fork_best_640x640.pt ou fork_last_640x640.pt) para a pasta [models](models/).
 
 2. Troque para a pasta [yolov7](yolov7/) e inicie o treino do modelo
 ```bash
@@ -73,6 +79,9 @@ python export.py --img-size 640 640 --grid --end2end --weights yolov7-fork/weigh
 **Observação**: Mais informações sobre outras operações, como testar e inferir, podem ser encontradas no repositório do modelo ou na pasta [yolov7](yolov7/).
 
 ### Inferência com ONNX
+
+[`fork_best_640x640.onnx`](https://github.com/mtsousa/LARA-2022_Fork-Detection/releases/download/v0.1/fork_best_640x640.onnx)
+[`fork_best_640x480.onnx`](https://github.com/mtsousa/LARA-2022_Fork-Detection/releases/download/v0.1/fork_best_640x480.onnx)
 
 No diretório principal, execute
 
