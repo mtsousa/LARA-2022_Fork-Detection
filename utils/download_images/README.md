@@ -10,7 +10,7 @@ python download_img.py -i [INPUT_FILE] -d [DATASET]
 
 **INPUT_FILE**: Nome do arquivo de entrada; e
 
-**DATASET**: Tipo de dataset 'train' ou 'val'.
+**DATASET**: Tipo de dataset 'train', 'val' ou 'test'.
 
 ### Exemplo
 
@@ -20,4 +20,4 @@ python download_img.py -i ../coco_manager/annotations/instances_train2017_url.tx
 
 ## Arquivos de saída
 
-As imagens baixadas são salvas na pasta do dataset correspondente ('train' ou 'val') dentro da pasta 'data'.
+As imagens baixadas são salvas na pasta do dataset correspondente ('train', 'val' ou 'test') dentro da pasta 'data'.

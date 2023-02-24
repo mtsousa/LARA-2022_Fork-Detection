@@ -28,7 +28,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input',
                         help='Path to the txt file of URLs')
     parser.add_argument('-d', '--dataset',
-                        help='Type of dataset \'train\' or \'val\'')
+                        help='Type of dataset \'train\', \'val\' ou \'test\'')
 
     args = parser.parse_args()
     input_file = args.input
