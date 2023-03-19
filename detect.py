@@ -32,22 +32,21 @@ def predict_bbox(session, images):
 
 if __name__ == '__main__':
 	# Parse command line arguments
-	parser = argparse.ArgumentParser(
-    description='Predict with YOLOv7-fork ONNX model')
+	parser = argparse.ArgumentParser(description='Predict with YOLOv7-fork ONNX model')
     
 	parser.add_argument('--model', required=True,
-                        metavar='/path/to/model.onnx',
-                        help="Path to ONNX model")
+		     			metavar='/path/to/model.onnx',
+						help="Path to ONNX model")
 	parser.add_argument('--input', required=True,
-                        help="Path to images (path/to/images) or path to image (path/to/image.jpg)")
+		     			help="Path to images (path/to/images) or path to image (path/to/image.jpg)")
 	parser.add_argument('--batch', default=1,
-                        help="Batch size")
+		     			help="Batch size")
 	parser.add_argument('--save', default=False, action='store_true',
-                        help="Save predicted image")
+                    	help="Save predicted image")
 	parser.add_argument('--dontshow', default=False, action='store_true',
-                        help="Don't show predicted image")
+                    	help="Don't show predicted image")
 	parser.add_argument('--cuda', default=False, action='store_true',
-                        help="Set execution on GPU")
+		     			help="Set execution on GPU")
 
 	args = parser.parse_args()
 	for key, value in args._get_kwargs():

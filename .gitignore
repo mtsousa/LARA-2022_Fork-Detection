@@ -11,3 +11,4 @@ yolov7-fork-p/
 *.pt
 *.onnx
 plot_mosaic.py
+yolov7_aux/
