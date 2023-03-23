@@ -86,22 +86,24 @@ python export.py --img-size 640 640 --grid --end2end --weights yolov7-fork/weigh
 No diretório principal, execute
 
 ```bash
-python detect.py --model [MODEL] --input [INPUT]
+(pFD)$ python detect.py -h
+usage: detect.py [-h] -m /path/to/model.onnx -i /path/to/images/ or
+                 /path/to/image.jpg [-b BATCH] [-s] [-d] [-c]
+
+Predict with YOLOv7-fork ONNX model
+
+options:
+  -h, --help            show this help message and exit
+  -m /path/to/model.onnx, --model /path/to/model.onnx
+                        Path to ONNX model.
+  -i /path/to/images/ or /path/to/image.jpg, --input /path/to/images/ or /path/to/image.jpg
+                        Path to images or path to image.
+  -b BATCH, --batch BATCH
+                        Batch size. (Default: 1)
+  -s, --save            Save predicted image. (Default: False)
+  -d, --dontshow        Don't show predicted image. (Default: False)
+  -c, --cuda            Set execution on GPU. (Default: False)
 ```
-
-**MODEL**: Caminho para o modelo ONNX; e
-
-**INPUT**: Caminho para a imagem ou para a pasta com as imagens.
-
-- Outros argumentos:
-
-    --batch: Tamanho do *batch*. **Valor padrão: 1**;
-    
-    --save: *flag* para salvar a imagem após inferência. **Valor padrão: False**;
-    
-    --dontshow: *flag* para não mostrar a imagem após inferência. **Valor padrão: False**; e
-
-    --cuda: *flag* para utilizar GPU. **Valor padrão: False**.
 
 - Exemplo
 

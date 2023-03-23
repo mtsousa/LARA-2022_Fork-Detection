@@ -34,12 +34,12 @@ if __name__ == '__main__':
 	# Parse command line arguments
 	parser = argparse.ArgumentParser(description='Predict with YOLOv7-fork ONNX model')
     
-	parser.add_argument('--model', required=True, metavar='/path/to/model.onnx', help="Path to ONNX model")
-	parser.add_argument('--input', required=True, help="Path to images or path to image")
-	parser.add_argument('--batch', default=1, help="Batch size")
-	parser.add_argument('--save', default=False, action='store_true', help="Save predicted image")
-	parser.add_argument('--dontshow', default=False, action='store_true', help="Don't show predicted image")
-	parser.add_argument('--cuda', default=False, action='store_true', help="Set execution on GPU")
+	parser.add_argument('-m', '--model', required=True, metavar='/path/to/model.onnx', help="Path to ONNX model.")
+	parser.add_argument('-i', '--input', required=True, metavar='/path/to/images/ or /path/to/image.jpg', help="Path to images or path to image.")
+	parser.add_argument('-b', '--batch', default=1, help="Batch size. (Default: 1)")
+	parser.add_argument('-s', '--save', default=False, action='store_true', help="Save predicted image. (Default: False)")
+	parser.add_argument('-d', '--dontshow', default=False, action='store_true', help="Don't show predicted image. (Default: False)")
+	parser.add_argument('-c', '--cuda', default=False, action='store_true', help="Set execution on GPU. (Default: False)")
 
 	args = parser.parse_args()
 	for key, value in args._get_kwargs():
